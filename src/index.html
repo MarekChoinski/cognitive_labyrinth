@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>webpack starterkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maze solver</title>
 </head>
+
 <body>
-  <h1>webpack starter</h1>
-  <p>✨ A lightweight foundation for your next webpack based frontend project.</p>
+
+  <p id="status">OpenCV.js is loading...</p>
+  <div>
+    <div class="inputoutput">
+      <img id="imageSrc" alt="No Image" />
+      <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
+    </div>
+    <div class="inputoutput">
+      <canvas id="canvasOutput"></canvas>
+
+      <video id="videoInput"></video>
+    </div>
+  </div>
+
+
+
+  <script async src="https://docs.opencv.org/master/opencv.js" id="opencv" type="text/javascript">
+  </script>
+
 </body>
+
 </html>
