@@ -10,19 +10,9 @@
 <body>
 
   <p id="status">OpenCV.js is loading...</p>
-  <div>
-    <div class="inputoutput">
-      <img id="imageSrc" alt="No Image" />
-      <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
-    </div>
-    <div class="inputoutput">
-      <video id="videoInput" height="480" width="640"></video>
-      <canvas id="canvasOutput"></canvas>
 
-    </div>
-  </div>
-
-
+  <video id="video_input" height="480" width="640" class="camera_input"></video>
+  <canvas id="canvas_output"></canvas>
 
   <script async src="https://docs.opencv.org/master/opencv.js" id="opencv" type="text/javascript">
   </script>
