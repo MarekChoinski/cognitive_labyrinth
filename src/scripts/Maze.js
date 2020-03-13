@@ -9,14 +9,14 @@ export default class Maze {
         this.cap = new cv.VideoCapture(video);
 
         this.FPS = 20;
-        this.sensivity_of_geeting_labirynth = 90;
+        this.sensivity_of_geeting_labirynth = 110;
 
         this.circles = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
         //this.labirynth_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
         this.circles_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
 
-        this.lower_green = [40, 100, 85];
-        this.upper_green = [75, 255, 255];
+        this.lower_green = [40, 100, 85, 0];
+        this.upper_green = [75, 255, 255, 255];
 
     }
 
@@ -25,11 +25,14 @@ export default class Maze {
             // get camera_frame
             this.cap.read(this.frame_from_video);
 
-            let dst = this.frame_from_video;
+            // let dst = this.frame_from_video;
+            let dist = this.labirynth_mask;
+            // let dst = this.labirynth_mask;
 
 
 
-            cv.imshow('canvas_output', dst);
+            cv.imshow('canvas_output', dist);
+            // this.frame_from_video.delete();
         } catch (err) {
             console.log(err);
         }
@@ -44,9 +47,29 @@ export default class Maze {
     }
 
     calculateMaze() {
-        let gray = new cv.Mat();
-        cv.cvtColor(this.frame_from_video, gray, cv.COLOR_RGBA2GRAY, 0);
-        cv.threshold(gray, 255, this.labirynth_mask, this.sensivity_of_geeting_labirynth, cv.THRESH_BINARY);
+
+        try {
+            // get grame frame
+            // let gray = new cv.Mat();
+            let gray = new cv.Mat();
+            // console.log(gray);
+
+            cv.cvtColor(this.frame_from_video, gray, cv.COLOR_RGBA2GRAY, 0);
+            // threshold image to ge only black labirynth
+            cv.threshold(gray, this.labirynth_mask, this.sensivity_of_geeting_labirynth, 255, cv.THRESH_BINARY);
+
+            let low = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type(), this.lower_green);
+            let high = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type(), this.upper_green);
+            // You can try more different parameters
+            cv.inRange(this.frame_from_video, low, high, this.dst);
+
+            low.delete();
+            high.delete();
+            gray.delete();
+        } catch (error) {
+            // console.log(error);
+
+        }
 
 
     }
