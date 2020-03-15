@@ -6,26 +6,31 @@ document.getElementById('opencv').onload = () => {
 
         document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
 
-        let video = document.getElementById("video_input");
-        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-            .then((stream) => {
-                video.srcObject = stream;
-                video.play();
-            })
-            .catch((err) => {
-                // TODO here error about two cameras
-                console.log("An error occurred! " + err);
-            });
+        // let video = document.getElementById("video_input");
+        // navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        //     .then((stream) => {
+        //         video.srcObject = stream;
+        //         video.play();
+        //     })
+        //     .catch((err) => {
+        //         // TODO here error about two cameras
+        //         console.log("An error occurred! " + err);
+        //     });
 
-        video.addEventListener('canplaythrough', () => {
-
-            const maze = new Maze(video);
-            maze.start();
+        // video.addEventListener('canplaythrough', () => {
 
 
 
+        // let video = cv.imread('canvas_input');
+        let video = document.getElementById("canvas_input");
+        video.crossOrigin = "Anonymous";
+        const maze = new Maze(video);
+        maze.start();
 
-        });
+
+
+
+        // });
 
 
     };
