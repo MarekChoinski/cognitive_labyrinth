@@ -88,29 +88,27 @@ export default class Maze {
     // returns position of start and end and diameter of found point
     find_position_of_end_points(points_mask) {
 
+
+        console.log(points_mask);
+
     }
 
     calculateMaze() {
 
         try {
             // get grame frame
-            // let gray = new cv.Mat();
             let gray = new cv.Mat();
-            // console.log(gray);
 
             cv.cvtColor(this.frame_from_video, gray, cv.COLOR_RGBA2GRAY, 0);
             // threshold image to emilinate white colors - we get only black labirynth + green points
-            // let thresholded_labirynt = new cv.Mat();
             cv.threshold(gray, gray, this.sensivity_of_geeting_labirynth, 255, cv.THRESH_BINARY_INV);
 
             // dilatation for bolder walls of maze
-            // const kernel = cv.Mat.ones(5, 5, cv.CV_8U);
-            // const anchor = new cv.Point(-1, -1);
             cv.dilate(
                 gray,
                 this.labirynth_mask,
-                cv.Mat.ones(5, 5, cv.CV_8U),
-                new cv.Point(-1, -1),
+                cv.Mat.ones(5, 5, cv.CV_8U), //kernel
+                new cv.Point(-1, -1), //anchor (-1 is default for center)
                 1,
                 cv.BORDER_CONSTANT,
                 cv.morphologyDefaultBorderValue()
@@ -135,12 +133,32 @@ export default class Maze {
             );
 
             let mask = new cv.Mat();
-            // let dtype = -1;
             cv.subtract(this.labirynth_mask, points_mask, this.labirynth_mask, mask, -1);
 
+            //this.find_position_of_end_points(points_mask);
+
+
+            let dst = cv.Mat.zeros(points_mask.cols, points_mask.rows, cv.CV_8UC3);
+            let contours = new cv.MatVector();
+            let hierarchy = new cv.Mat();
+
+            cv.findContours(points_mask, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+
+            for (let i = 0; i < contours.size(); ++i) {
+                let color = new cv.Scalar(Math.round(Math.random() * 255), Math.round(Math.random() * 255),
+                    Math.round(Math.random() * 255));
+                cv.drawContours(this.labirynth_mask, contours, i, color, 1, cv.LINE_8, hierarchy, 100);
+            }
+
+            // this.labirynth_mask = dst;
+
+            dst.delete(); contours.delete(); hierarchy.delete();
+
+
+
+            // clean up Mat
             gray.delete();
             mask.delete();
-            // thresholded_labirynt.delete();
             low.delete();
             high.delete();
             hsv.delete();
