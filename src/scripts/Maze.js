@@ -10,21 +10,15 @@ export default class Maze {
         // this.frame_from_video = cv.imread('canvas_input');
         this.dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
         this.labirynth_mask = new cv.Mat(video.height, video.width, cv.CV_8UC1);
-        // this.hsv_frame = new cv.Mat(video.height, video.width, cv.CV_8UC4);
-        // this.hsv_frame2 = new cv.Mat(video.height, video.width, cv.CV_8U);
         //this.cap = new cv.VideoCapture(video);
 
         this.FPS = 24;
         this.sensivity_of_geeting_labirynth = 110;
 
-        // this.circles = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
-        //this.labirynth_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
-        // this.circles_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
+        this.circles = cv.Mat.zeros(video.height, video.width, cv.CV_8UC3);
 
         this.lower_green = [40, 100, 85, 0];
         this.upper_green = [75, 255, 255, 255];
-        // this.lower_green = [52, 170, 52, 0];
-        // this.upper_green = [235, 255, 235, 255];
     }
 
     showVideo() {
@@ -87,10 +81,51 @@ export default class Maze {
     // so we should find two the biggest
     // returns position of start and end and diameter of found point
     find_position_of_end_points(points_mask) {
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
 
+        cv.findContours(points_mask, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
 
-        console.log(points_mask);
+        hierarchy.delete();
 
+        let positions = [];
+        // get two biggest 2
+        if (contours.size() >= 2) {
+            let largestRadius1 = 0;
+            let largestRadius2 = 0;
+
+            for (let i = 0; i < contours.size(); i++) {
+                let areaValue = cv.contourArea(contours.get(i), false);
+
+                if (areaValue > largestRadius1) {
+                    largestRadius2 = largestRadius1;
+                    largestRadius1 = areaValue;
+
+                    let rect = cv.boundingRect(contours.get(i));
+
+                    positions[1] = positions[0];
+                    positions[0] = {
+                        x: Math.round((rect.x + rect.width) / 2),
+                        y: Math.round((rect.y + rect.height) / 2),
+                        radius: Math.max(rect.height, rect.width),
+                    };
+
+                } else if (areaValue > largestRadius2) {
+                    largestRadius2 = areaValue;
+
+                    let rect = cv.boundingRect(contours.get(i));
+
+                    positions[1] = {
+                        x: Math.round((rect.x + rect.width) / 2),
+                        y: Math.round((rect.y + rect.height) / 2),
+                        radius: Math.max(rect.height, rect.width),
+                    };
+                }
+            }
+        }
+
+        contours.delete();
+        return positions;
     }
 
     calculateMaze() {
@@ -135,36 +170,9 @@ export default class Maze {
             let mask = new cv.Mat();
             cv.subtract(this.labirynth_mask, points_mask, this.labirynth_mask, mask, -1);
 
-            //this.find_position_of_end_points(points_mask);
+            let points = this.find_position_of_end_points(points_mask);
 
-
-            // TEMP FINDING CONTOURS
-
-            let dst = cv.Mat.zeros(points_mask.cols, points_mask.rows, cv.CV_8UC3);
-            let contours = new cv.MatVector();
-            let hierarchy = new cv.Mat();
-
-            cv.findContours(points_mask, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
-
-            for (let i = 0; i < contours.size(); ++i) {
-                let color = new cv.Scalar(Math.round(Math.random() * 255), Math.round(Math.random() * 255),
-                    Math.round(Math.random() * 255));
-                cv.drawContours(this.labirynth_mask, contours, i, color, 1, cv.LINE_8, hierarchy, 100);
-            }
-
-            // this.labirynth_mask = dst;
-            for (let i = 0; i < contours.size(); ++i) {
-                // console.log(contours.get(i));
-            }
-
-            // console.log(contours.size());
-
-
-
-
-            dst.delete(); contours.delete(); hierarchy.delete();
-
-            // TEMP FINDING CONTOURS
+            console.log(points);
 
 
             // clean up Mat
