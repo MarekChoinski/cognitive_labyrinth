@@ -10,67 +10,40 @@ export default class Maze {
         // this.frame_from_video = cv.imread('canvas_input');
         this.dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
         this.labirynth_mask = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+        this.circles = new cv.Mat(video.height, video.width, cv.CV_8UC4);
         //this.cap = new cv.VideoCapture(video);
 
         this.FPS = 24;
         this.sensivity_of_geeting_labirynth = 110;
 
-        this.circles = cv.Mat.zeros(video.height, video.width, cv.CV_8UC3);
+        // this.circles = cv.Mat.zeros(video.height, video.width, cv.CV_8UC3);
 
         this.lower_green = [40, 100, 85, 0];
         this.upper_green = [75, 255, 255, 255];
+
+        this.green = [0, 255, 0, 255];
+
+        this.is_green_points = false;
+        // points = [];
     }
 
     showVideo() {
         try {
-            // console.log(this.frame_from_video);
 
             // get camera_frame
             // this.cap.read(this.frame_from_video);
 
+            const addWeightedMat = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
+            // const addWeightedMat2 = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
+            if (this.is_green_points) {
+                cv.addWeighted(this.frame_from_video, 1, this.circles, 0.3, 1, addWeightedMat);
+                // cv.addWeighted(addWeightedMat, 1, this.labirynth_mask, 0.3, 1, addWeightedMat2);
+            }
 
+            // cv.imshow('canvas_output', this.frame_from_video);
+            cv.imshow('canvas_output', addWeightedMat);
 
-            // let dst = this.frame_from_video;
-            // let dist = this.labirynth_mask;
-            // let dst = this.labirynth_mask;
-
-            // let dist = new cv.Mat();
-            // console.log(gray);
-
-            // cv.cvtColor(this.frame_from_video, dist, cv.COLOR_RGBA2GRAY, 0);
-
-            // cv.imshow('canvas_output', this.labirynth_mask);
-
-
-
-            // let hsv_frame = new cv.Mat();
-            // cv.cvtColor(this.frame_from_video, hsv_frame, cv.COLOR_BGR2HSV, 0);
-            // this.hsv_frame = hsv;
-            // let low = new cv.Mat(hsv_frame.rows, hsv_frame.cols, hsv_frame.type(), this.lower_green);
-            // let high = new cv.Mat(hsv_frame.rows, hsv_frame.cols, hsv_frame.type(), this.upper_green);
-
-
-            // console.log(this.frame_from_video.channels());
-            // console.log(this.hsv_frame.channels());
-            // console.log();
-
-
-
-
-            // let inr = new cv.Mat();
-            // cv.inRange(hsv_frame, low, high, inr);
-            // console.log(inr.channels());
-            // console.log();
-
-            // cv.imshow('canvas_output', inr);
-            cv.imshow('canvas_output', this.labirynth_mask);
-            // dist.delete();
-            // this.frame_from_video.delete();
-
-            // inr.delete();
-            // hsv_frame.delete();
-            // low.delete();
-            // high.delete();
+            addWeightedMat.delete();
         } catch (err) {
             console.log(err);
         }
@@ -80,6 +53,7 @@ export default class Maze {
     // there could be a lot of green elements on frame
     // so we should find two the biggest
     // returns position of start and end and diameter of found point
+    // returns empty array [] if there is no two points
     find_position_of_end_points(points_mask) {
         let contours = new cv.MatVector();
         let hierarchy = new cv.Mat();
@@ -105,9 +79,9 @@ export default class Maze {
 
                     positions[1] = positions[0];
                     positions[0] = {
-                        x: Math.round((rect.x + rect.width) / 2),
-                        y: Math.round((rect.y + rect.height) / 2),
-                        radius: Math.max(rect.height, rect.width),
+                        x: Math.round((rect.x + rect.width / 2)),
+                        y: Math.round((rect.y + rect.height / 2)),
+                        radius: Math.round(Math.max(rect.height, rect.width) / 2),
                     };
 
                 } else if (areaValue > largestRadius2) {
@@ -116,9 +90,9 @@ export default class Maze {
                     let rect = cv.boundingRect(contours.get(i));
 
                     positions[1] = {
-                        x: Math.round((rect.x + rect.width) / 2),
-                        y: Math.round((rect.y + rect.height) / 2),
-                        radius: Math.max(rect.height, rect.width),
+                        x: Math.round((rect.x + rect.width / 2)),
+                        y: Math.round((rect.y + rect.height / 2)),
+                        radius: Math.round(Math.max(rect.height, rect.width) / 2),
                     };
                 }
             }
@@ -172,7 +146,19 @@ export default class Maze {
 
             let points = this.find_position_of_end_points(points_mask);
 
-            console.log(points);
+            if (points.length > 0) {
+                this.is_green_points = true;
+                // this.circles;
+                cv.circle(this.circles, new cv.Point(points[0].x, points[0].y), points[0].radius, this.green, -1);
+                cv.circle(this.circles, new cv.Point(points[1].x, points[1].y), points[1].radius, this.green, -1);
+            }
+
+            else {
+                this.is_green_points = false;
+            }
+
+
+            // console.log(points);
 
 
             // clean up Mat
