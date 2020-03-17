@@ -17,9 +17,9 @@ export default class Maze {
         this.FPS = 24;
         this.sensivity_of_geeting_labirynth = 110;
 
-        this.circles = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
+        // this.circles = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
         //this.labirynth_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
-        this.circles_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
+        // this.circles_mask = new Array(video.height).fill().map(() => new Array(video.width).fill([0, 0, 0]));
 
         this.lower_green = [40, 100, 85, 0];
         this.upper_green = [75, 255, 255, 255];
@@ -138,6 +138,8 @@ export default class Maze {
             //this.find_position_of_end_points(points_mask);
 
 
+            // TEMP FINDING CONTOURS
+
             let dst = cv.Mat.zeros(points_mask.cols, points_mask.rows, cv.CV_8UC3);
             let contours = new cv.MatVector();
             let hierarchy = new cv.Mat();
@@ -151,9 +153,18 @@ export default class Maze {
             }
 
             // this.labirynth_mask = dst;
+            for (let i = 0; i < contours.size(); ++i) {
+                // console.log(contours.get(i));
+            }
+
+            // console.log(contours.size());
+
+
+
 
             dst.delete(); contours.delete(); hierarchy.delete();
 
+            // TEMP FINDING CONTOURS
 
 
             // clean up Mat
