@@ -160,9 +160,9 @@ export default class Maze {
             }
 
 
-            const path = Solver.solve("", points[0], points[1]);
+            const path = Solver.solve(this.labirynth_mask, points[0], points[1]);
 
-            // console.log(a);
+            console.log(path);
 
 
             // clean up Mat

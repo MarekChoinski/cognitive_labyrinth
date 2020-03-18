@@ -1,6 +1,6 @@
 const Direction = Object.freeze({
-    WALL: Symbol("WALL"),
-    WAY: Symbol("WAY"),
+    WALL: Symbol(255),
+    WAY: Symbol(0),
 
     START: Symbol("START"),
     END: Symbol("END"),
@@ -18,13 +18,33 @@ const Direction = Object.freeze({
 
 export default class Solver {
 
-    static solve(labirynth, start, end) {
+    static solve(labirynth_mask, start, end) {
+
+        cv.copyMakeBorder(labirynth_mask, labirynth_mask, 1, 1, 1, 1, cv.BORDER_CONSTANT, [255, 255, 255, 255]);
 
         let path = [];
-        // console.log(Direction.WALL);
-        // console.log(start);
-        // console.log();
 
-        return "xD";
+        console.time('Wypełnienie tablicy');
+        // console.timeLog("MyTimer", "Starting application up…");
+
+        let labirynth = Array(labirynth_mask.cols).fill().map(() => Array(labirynth_mask.rows).fill());
+
+        for (let i = 0; i < labirynth_mask.cols; i++) {
+            for (let j = 0; j < labirynth_mask.rows; j++) {
+                labirynth[i][j] = labirynth_mask.ucharAt(i, j);
+            }
+        }
+
+        console.timeEnd("Wypełnienie tablicy");
+
+        // let a = new cv.Mat();
+        // a.getDa
+
+        // TODO there should be padding with 1px black border to avoid index error
+        //labirynth = np.pad(labirynth, pad_width=0, mode='constant', constant_values=255)
+
+
+
+        return labirynth;
     }
 }
