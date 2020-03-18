@@ -1,3 +1,5 @@
+import Solver from "./Solver";
+
 export default class Maze {
 
 
@@ -158,7 +160,9 @@ export default class Maze {
             }
 
 
-            // console.log(points);
+            const path = Solver.solve("", points[0], points[1]);
+
+            // console.log(a);
 
 
             // clean up Mat
@@ -185,7 +189,7 @@ export default class Maze {
     // free(){
     //     clearInterval(refreshIntervalId);
     //     clearInterval(refreshIntervalId);
-    // src.delete(); dst.delete();
+    // src.delete(); dst.delete(); //TODO delete also class Mat
     // }
 
 
