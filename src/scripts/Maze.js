@@ -13,6 +13,7 @@ export default class Maze {
         this.dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
         this.labirynth_mask = new cv.Mat(video.height, video.width, cv.CV_8UC1);
         this.circles = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+        this.solved_path_mask = new cv.Mat(video.height, video.width, cv.CV_8UC4);
         //this.cap = new cv.VideoCapture(video);
 
         this.FPS = 24;
@@ -35,18 +36,19 @@ export default class Maze {
             // get camera_frame
             // this.cap.read(this.frame_from_video);
 
-            // const addWeightedMat = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
+            const addWeightedMat = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
             // const addWeightedMat2 = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
-            // if (this.is_green_points) {
-            // cv.addWeighted(this.frame_from_video, 1, this.circles, 0.3, 1, addWeightedMat);
-            // cv.addWeighted(addWeightedMat, 1, this.labirynth_mask, 0.3, 1, addWeightedMat2);
-            // }
+            if (this.is_green_points) {
+                // cv.addWeighted(this.frame_from_video, 1, this.circles, 0.3, 1, addWeightedMat);
+                cv.addWeighted(this.frame_from_video, 1, this.solved_path_mask, 0.7, 1, addWeightedMat);
+                // cv.addWeighted(addWeightedMat, 1, this.labirynth_mask, 0.3, 1, addWeightedMat2);
+            }
 
             // cv.imshow('canvas_output', this.frame_from_video);
-            // cv.imshow('canvas_output', addWeightedMat);
-            cv.imshow('canvas_output', this.labirynth_mask);
+            cv.imshow('canvas_output', addWeightedMat);
+            // cv.imshow('canvas_output', this.labirynth_mask);
 
-            // addWeightedMat.delete();
+            addWeightedMat.delete();
         } catch (err) {
             console.log(err);
         }
@@ -121,7 +123,7 @@ export default class Maze {
                 this.labirynth_mask,
                 cv.Mat.ones(5, 5, cv.CV_8U), //kernel
                 new cv.Point(-1, -1), //anchor (-1 is default for center)
-                1,
+                4, // iteration of dilatation //TODO this could be too much - change also in green points in case of
                 cv.BORDER_CONSTANT,
                 cv.morphologyDefaultBorderValue()
             );
@@ -139,7 +141,7 @@ export default class Maze {
                 points_mask,
                 cv.Mat.ones(5, 5, cv.CV_8U),
                 new cv.Point(-1, -1),
-                1,
+                4,
                 cv.BORDER_CONSTANT,
                 cv.morphologyDefaultBorderValue()
             );
@@ -160,24 +162,37 @@ export default class Maze {
                 this.is_green_points = false;
             }
 
-
             const solver_result = Solver.solve(this.labirynth_mask, points[0], points[1]);
 
             if (solver_result.is_solved) {
                 if (this.labirynth_mask.isContinuous()) {
 
-                    for (const point of solver_result.path) {
-                        this.labirynth_mask.data[point.y * this.labirynth_mask.cols * this.labirynth_mask.channels() + point.x * this.labirynth_mask.channels()] = 255;
+                    let temp_solved_path_mask = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
 
+                    for (const point of solver_result.path) {
+                        let ch = temp_solved_path_mask.channels();
+                        let ptr = point.y * temp_solved_path_mask.cols * ch + point.x * ch;
+                        temp_solved_path_mask.data[ptr] = 255; // R
+                        temp_solved_path_mask.data[ptr + 1] = 255; // G
+                        temp_solved_path_mask.data[ptr + 2] = 255; // B
+                        temp_solved_path_mask.data[ptr + 3] = 15; // A
                     }
+
+                    cv.dilate(
+                        temp_solved_path_mask,
+                        temp_solved_path_mask,
+                        cv.Mat.ones(5, 5, cv.CV_8U),
+                        new cv.Point(-1, -1),
+                        1,
+                        cv.BORDER_CONSTANT,
+                        cv.morphologyDefaultBorderValue()
+                    );
+
+                    this.solved_path_mask = temp_solved_path_mask.clone();
+                    temp_solved_path_mask.delete();
                 }
             }
 
-
-            console.log(solver_result);
-
-
-            // clean up Mat
             gray.delete();
             mask.delete();
             low.delete();
