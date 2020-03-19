@@ -35,17 +35,18 @@ export default class Maze {
             // get camera_frame
             // this.cap.read(this.frame_from_video);
 
-            const addWeightedMat = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
+            // const addWeightedMat = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
             // const addWeightedMat2 = new cv.Mat(this.frame_from_video.rows, this.frame_from_video.cols, this.frame_from_video.type());
-            if (this.is_green_points) {
-                cv.addWeighted(this.frame_from_video, 1, this.circles, 0.3, 1, addWeightedMat);
-                // cv.addWeighted(addWeightedMat, 1, this.labirynth_mask, 0.3, 1, addWeightedMat2);
-            }
+            // if (this.is_green_points) {
+            // cv.addWeighted(this.frame_from_video, 1, this.circles, 0.3, 1, addWeightedMat);
+            // cv.addWeighted(addWeightedMat, 1, this.labirynth_mask, 0.3, 1, addWeightedMat2);
+            // }
 
             // cv.imshow('canvas_output', this.frame_from_video);
-            cv.imshow('canvas_output', addWeightedMat);
+            // cv.imshow('canvas_output', addWeightedMat);
+            cv.imshow('canvas_output', this.labirynth_mask);
 
-            addWeightedMat.delete();
+            // addWeightedMat.delete();
         } catch (err) {
             console.log(err);
         }
@@ -182,7 +183,7 @@ export default class Maze {
         console.log(this.frame_from_video);
         setInterval(() => this.showVideo(), 1000 / this.FPS);
 
-        setInterval(() => this.calculateMaze(), 0); //TODO: probably shouldn't be faster than FPS, but idk tbh // TODO2: or make some guard variable to check if there is new frame - eg. is_new_frame = false
+        setInterval(() => this.calculateMaze(), 1000); //TODO: probably shouldn't be faster than FPS, but idk tbh // TODO2: or make some guard variable to check if there is new frame - eg. is_new_frame = false
     }
 
     //todo
