@@ -20,7 +20,7 @@ const Direction = Object.freeze({
 export default class Solver {
 
     static solve(labirynth_mask, start, end) {
-
+        console.time('Całość');
         cv.copyMakeBorder(labirynth_mask, labirynth_mask, 1, 1, 1, 1, cv.BORDER_CONSTANT, [255, 255, 255, 255]);
 
         console.time('Wypełnienie tablicy');
@@ -35,7 +35,6 @@ export default class Solver {
 
         console.timeEnd("Wypełnienie tablicy");
 
-
         let path = [];
 
         path.push(start);
@@ -43,36 +42,11 @@ export default class Solver {
 
         labirynth[start.y][start.x] = Direction.START;
 
-        let queue = [];//should be deque
+        let queue = [];
 
         queue.push(start);
 
         let find = false;
-
-        console.log("ql", queue.length);
-        console.log("labirynth.length", labirynth.length);
-        console.log("labirynth[0].length", labirynth[0].length);
-        console.log("labirynth_mask.cols", labirynth_mask.cols);
-        console.log("labirynth_mask.rows", labirynth_mask.rows);
-
-        for (let i = 0; i < labirynth.length; i++) {
-            for (let j = 0; j < labirynth[0].length; j++) {
-                if (labirynth[i][j] != 255 && labirynth[i][j] != 0) {
-                    console.log(i, j, labirynth[i][j]);
-
-                }
-            }
-        }
-
-        // let index = queue.shift();
-
-        // console.log(index.x, index.y);
-
-        // labirynth[index.x][index.y + 1] = Direction.UP;
-        // console.log(labirynth[index.x][[index.y - 1]] == Direction.WAY);
-        // console.log(labirynth[index.x][[index.y + 1]] == Direction.WAY);
-        // console.log(labirynth[index.x - 1][[index.y]] == Direction.WAY);
-        // console.log(labirynth[index.x + 1][[index.y]] == Direction.WAY);
 
         console.time('DST');
 
@@ -92,41 +66,37 @@ export default class Solver {
                 // up
                 if (labirynth[index.y][index.x - 1] == Direction.WAY) {
                     labirynth[index.y][index.x - 1] = Direction.RIGHT;
-                    let temp = {
+                    queue.push({
                         y: index.y,
                         x: index.x - 1,
-                    };
-                    queue.push(temp);
+                    });
                 }
 
                 // down
                 if (labirynth[index.y][index.x + 1] == Direction.WAY) {
                     labirynth[index.y][index.x + 1] = Direction.LEFT;
-                    let temp = {
+                    queue.push({
                         y: index.y,
                         x: index.x + 1,
-                    };
-                    queue.push(temp);
+                    });
                 }
 
                 // left
                 if (labirynth[index.y - 1][index.x] == Direction.WAY) {
                     labirynth[index.y - 1][index.x] = Direction.DOWN;
-                    let temp = {
+                    queue.push({
                         y: index.y - 1,
                         x: index.x,
-                    };
-                    queue.push(temp);
+                    });
                 }
 
                 // right
                 if (labirynth[index.y + 1][index.x] == Direction.WAY) {
                     labirynth[index.y + 1][index.x] = Direction.UP;
-                    let temp = {
+                    queue.push({
                         y: index.y + 1,
                         x: index.x,
-                    };
-                    queue.push(temp);
+                    });
                 }
 
             } catch (error) {
@@ -143,13 +113,10 @@ export default class Solver {
         try {
 
             while (labirynth[shortest_index.y][shortest_index.x] != Direction.START) {
-                // while (shortest_index.y == start.y) {
-                // console.log(labirynth[shortest_index.y][shortest_index.x]);
 
                 if (labirynth[shortest_index.y][shortest_index.x] == Direction.UP) {
                     path.push(shortest_index);
                     labirynth[shortest_index.y][shortest_index.x] = Direction.UP_FOUND;
-                    // shortest_index = (shortest_index[0], shortest_index[1] - 1);
                     shortest_index = {
                         x: shortest_index.x,
                         y: shortest_index.y - 1,
@@ -159,7 +126,6 @@ export default class Solver {
                 if (labirynth[shortest_index.y][shortest_index.x] == Direction.DOWN) {
                     path.push(shortest_index);
                     labirynth[shortest_index.y][shortest_index.x] = Direction.DOWN_FOUND;
-                    // shortest_index = (shortest_index[0], shortest_index[1] + 1);
                     shortest_index = {
                         x: shortest_index.x,
                         y: shortest_index.y + 1,
@@ -169,7 +135,6 @@ export default class Solver {
                 if (labirynth[shortest_index.y][shortest_index.x] == Direction.LEFT) {
                     path.push(shortest_index);
                     labirynth[shortest_index.y][shortest_index.x] = Direction.LEFT_FOUND;
-                    // shortest_index = (shortest_index[0] - 1, shortest_index[1]);
                     shortest_index = {
                         x: shortest_index.x - 1,
                         y: shortest_index.y,
@@ -179,7 +144,6 @@ export default class Solver {
                 if (labirynth[shortest_index.y][shortest_index.x] == Direction.RIGHT) {
                     path.push(shortest_index);
                     labirynth[shortest_index.y][shortest_index.x] = Direction.RIGHT_FOUND;
-                    // shortest_index = (shortest_index[0] + 1, shortest_index[1]);
                     shortest_index = {
                         x: shortest_index.x + 1,
                         y: shortest_index.y,
@@ -191,7 +155,7 @@ export default class Solver {
             console.log(error);
         }
 
-
+        console.timeEnd("Całość");
 
         return {
             is_solved: find,
