@@ -31,7 +31,7 @@ export default class Maze {
     constructor(video) {
 
         this.video = video;
-        this.context = document.getElementById("canvas_output").getContext("2d");
+        // this.context = document.getElementById("canvas_output").getContext("2d");
         this.context_labirynth = document.getElementById("canvas_output_labirynth").getContext("2d");
         this.context_green_points = document.getElementById("canvas_output_green_points").getContext("2d");
         this.frame_from_video = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
@@ -346,71 +346,20 @@ export default class Maze {
 
                 cap.read(this.frame_from_video);
 
-                let actual_frame = this.frame_from_video.clone();
+                // let actual_frame = this.frame_from_video.clone();
 
-                cv.cvtColor(actual_frame, actual_frame, cv.COLOR_RGBA2RGB);
-
-                // let hsv = new cv.Mat();
-                // cv.cvtColor(actual_frame, hsv, cv.COLOR_RGB2HSV, 0);
+                // cv.cvtColor(actual_frame, actual_frame, cv.COLOR_RGBA2RGB);
 
 
-                // let labirynth_mask_C3 = new cv.Mat();
-                // cv.cvtColor(this.labirynth_mask, labirynth_mask_C3, cv.COLOR_GRAY2RGB, 0);
-                // labirynth_mask_C3.convertTo(this.labirynth_mask, cv.CV_8UC3);
-
-                //console.log(hsv.channels(), actual_frame.channels());
-                // console.log(this.labirynth_mask.channels(), actual_frame.channels());
-                // console.log('a', labirynth_mask_C3.type(), actual_frame.type());
-                // console.log('a', labirynth_mask_C3.channels(), actual_frame.channels());
-
-                // cv.addWeighted(actual_frame, 1, hsv, 0.5, 1, actual_frame);
-                // cv.addWeighted(actual_frame, 1, labirynth_mask_C3, 0.5, 1, actual_frame);
-                // console.log('b', labirynth_mask_C3.channels(), actual_frame.channels());
-
-
-
-
-                // if (this.points.length > 0) {
-                //     cv.circle(actual_frame, new cv.Point(this.points[0].x, this.points[0].y), this.points[0].radius, this.green, -1);
-                //     cv.circle(actual_frame, new cv.Point(this.points[1].x, this.points[1].y), this.points[1].radius, this.green, -1);
-                // }
-
-                // if (this.is_solved) {
-                //     console.log("solved");
-
-                //     // if (this.labirynth_mask.isContinuous()) {
-                //     if (actual_frame.isContinuous()) {
-                //         for (const point of this.path) {
-                //             let ch = actual_frame.channels();
-                //             let ptr = point.y * actual_frame.cols * ch + point.x * ch;
-                //             actual_frame.data[ptr] = 255; // R
-                //             actual_frame.data[ptr + 1] = 255; // G
-                //             actual_frame.data[ptr + 2] = 255; // B
-                //             actual_frame.data[ptr + 3] = 15; // A
-                //         }
-                //     }
-
-                //     // cv.dilate(
-                //     //     temp_solved_path_mask,
-                //     //     temp_solved_path_mask,
-                //     //     cv.Mat.ones(5, 5, cv.CV_8U),
-                //     //     new cv.Point(-1, -1),
-                //     //     1,
-                //     //     cv.BORDER_CONSTANT,
-                //     //     cv.morphologyDefaultBorderValue()
-                //     // );
-                // }
-
-
-                this.context.clearRect(0, 0, this.video.height, this.video.width);
-                cv.imshow('canvas_output', actual_frame);
+                // this.context.clearRect(0, 0, this.video.height, this.video.width);
+                // cv.imshow('canvas_output', actual_frame);
                 // this.context_labirynth.clearRect(0, 0, this.video.height, this.video.width);
                 // cv.imshow('canvas_output_labirynth', this.labirynth_mask);
                 this.context_green_points.clearRect(0, 0, this.video.height, this.video.width);
                 cv.imshow('canvas_output_green_points', this.circles);
 
                 // hsv.delete();
-                actual_frame.delete();
+                // actual_frame.delete();
                 // labirynth_mask_C3.delete();
 
                 // schedule the next one.
@@ -433,11 +382,6 @@ export default class Maze {
             try {
                 let begin = Date.now();
                 this.calculateMaze();
-
-
-                // console.log("test");
-
-                // setTimeout(() => mazing(), 0);
 
                 let delay = 1000 / FPS_MAZE - (Date.now() - begin);
                 setTimeout(() => mazing(), delay);
