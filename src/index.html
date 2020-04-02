@@ -11,12 +11,21 @@
 
   <p id="status">OpenCV.js is loading...</p>
 
-  <!-- <video id="video_input" height="480" width="640" class="camera_input"></video> -->
-  <img id="canvas_input" src="public/test2.jpg" height="966" width="724"></canvas>
-  <canvas id="canvas_output"></canvas>
+  <video id="video_input" height="480" width="640" class="camera_input"></video>
+  <!-- <img id="canvas_input" height="480" width="640"></canvas> -->
+
+  <div style="position: relative;">
+    <canvas style="position: absolute;" id="canvas_output" height="480" width="640"> </canvas>
+    <canvas style="position: absolute;opacity: 0.3;filter: invert(1);" id="canvas_output_labirynth" height="480"
+      width="640"></canvas>
+    <canvas style="position: absolute;opacity: 0.5;" id="canvas_output_green_points" height="480" width="640"></canvas>
+  </div>
+
 
   <script async src="https://docs.opencv.org/master/opencv.js" id="opencv" type="text/javascript">
   </script>
+  <!-- <script src="https://docs.opencv.org/master/utils.js" id="opencv" type="text/javascript"> -->
+  <!-- </script> -->
 
 </body>
 
