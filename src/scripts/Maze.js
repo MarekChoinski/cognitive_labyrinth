@@ -37,11 +37,7 @@ export default class Maze {
         this.context_solved_path = document.getElementById("canvas_output_solved_path").getContext("2d");
         this.frame_from_video = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
 
-        this.dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
         this.labirynth_mask = new cv.Mat(video.height, video.width, cv.CV_8UC1);
-        this.solver_result = {
-            is_solved: false,
-        };
 
         this.circles = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
         this.solved_path_mask = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
@@ -55,11 +51,6 @@ export default class Maze {
         this.upper_green = [85, 255, 255, 255];
 
         this.green = [0, 255, 0, 128];
-
-        this.is_green_points = false;
-        this.points = [];
-        this.path = [];
-        this.is_solved = false;
     }
 
     // we should find position of end points
@@ -160,6 +151,7 @@ export default class Maze {
             let points = this.find_position_of_end_points(points_mask);
 
             this.circles = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
+            this.solved_path_mask = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
 
             if (points.length > 0) {
                 this.is_green_points = true;
@@ -171,7 +163,7 @@ export default class Maze {
 
                 let solver_result = Solver.solve(this.labirynth_mask, points[0], points[1]);
 
-                this.solved_path_mask = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
+
                 if (solver_result.is_solved) {
                     console.log("solved!");
                     if (this.labirynth_mask.isContinuous()) {
@@ -188,7 +180,7 @@ export default class Maze {
                         cv.dilate(
                             this.solved_path_mask,
                             this.solved_path_mask,
-                            cv.Mat.ones(3, 3, cv.CV_8U),
+                            cv.Mat.ones(4, 4, cv.CV_8U),
                             new cv.Point(-1, -1),
                             1,
                             cv.BORDER_CONSTANT,
