@@ -9,17 +9,20 @@
 
 <body>
 
-  <p id="status">OpenCV.js is loading...</p>
+  
 
+  
   <!-- <img id="canvas_input" height="480" width="640"></canvas> -->
-
+  
   <div style="position: relative;">
-    <video style="position: absolute;" id="video_input" height="480" width="640" class="camera_input"></video>
+    <p id="size_p" style="position: absolute;top: 50px;left:0;z-index:99;">test2</p>
+    <p id="status" style="position: absolute;top: 0;left:0;z-index:99;">OpenCV.js is loading...</p>
+    <video style="position: absolute;width:100%;" id="video_input" class="camera_input"  autoplay="true" playsinline="true">
+    </video>
+      <canvas style="position: absolute;opacity: 0.3;filter: invert(1);width:100%;" id="canvas_output_labirynth" ></canvas>
+      <canvas style="position: absolute;opacity: 0.4;width:100%;" id="canvas_output_solved_path" ></canvas>
+      <canvas style="position: absolute;opacity: 0.8;width:100%;" id="canvas_output_green_points" ></canvas>
     <!-- <canvas style="position: absolute;" id="canvas_output" height="480" width="640"> </canvas> -->
-    <canvas style="position: absolute;opacity: 0.3;filter: invert(1);" id="canvas_output_labirynth" height="480"
-      width="640"></canvas>
-    <canvas style="position: absolute;opacity: 0.4;" id="canvas_output_solved_path" height="480" width="640"></canvas>
-    <canvas style="position: absolute;opacity: 0.8;" id="canvas_output_green_points" height="480" width="640"></canvas>
   </div>
 
 

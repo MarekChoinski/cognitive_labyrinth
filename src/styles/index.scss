@@ -1,5 +1,16 @@
 @import 'camera_input';
 
+html, body{
+  margin: 0;
+  padding: 0;
+  color: red;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
 body {
   font-family: sans-serif;
+
 }
