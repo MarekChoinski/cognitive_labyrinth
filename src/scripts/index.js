@@ -63,11 +63,10 @@ document.getElementById('opencv').onload = () => {
 
             video.addEventListener('canplaythrough', () => {
 
-                document.getElementById('size_p').innerHTML = 'off height: '+video.offsetHeight + ' width: '+video.offsetWidth;
+                // document.getElementById('size_p').innerHTML = 'off height: '+video.offsetHeight + ' width: '+video.offsetWidth;
                 
                 document.getElementById('video_input').width = video.offsetWidth;
                 document.getElementById('video_input').height = video.offsetHeight;
-
 
                 document.getElementById('canvas_output_labirynth').width = video.offsetWidth;
                 document.getElementById('canvas_output_labirynth').height = video.offsetHeight;
@@ -77,6 +76,9 @@ document.getElementById('opencv').onload = () => {
 
                 document.getElementById('canvas_output_green_points').width = video.offsetWidth;
                 document.getElementById('canvas_output_green_points').height = video.offsetHeight;
+
+                document.getElementById('container').style.width = video.offsetWidth + "px";
+                document.getElementById('container').style.height = video.offsetHeight + "px";
 
                 const maze = new Maze(video);
                 maze.start();

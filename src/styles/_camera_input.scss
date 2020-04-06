@@ -1,4 +1,9 @@
 .camera_input {
-    // display: none;
-    // width: 100%;
+    position: absolute;
+    width:100%;
+
+    @media (min-width: 1200px) {
+        width: 1200px;
+        height: auto;
+    }
 }
