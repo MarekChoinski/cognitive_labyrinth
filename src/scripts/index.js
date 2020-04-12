@@ -6,7 +6,7 @@ import Maze from './Maze.js';
 document.getElementById('opencv').onload = () => {
     cv['onRuntimeInitialized'] = () => {
 
-        document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+        // document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
         // let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         // let cameraStream;
 
@@ -58,27 +58,27 @@ document.getElementById('opencv').onload = () => {
         function successCallback(stream) {
             video.srcObject = stream;
             video.play();
-            document.getElementById('status').innerHTML = 'dziala kamera.';
+            // document.getElementById('status').innerHTML = 'dziala kamera.';
 
 
             video.addEventListener('canplaythrough', () => {
 
-                // document.getElementById('size_p').innerHTML = 'off height: '+video.offsetHeight + ' width: '+video.offsetWidth;
-                
-                document.getElementById('video_input').width = video.offsetWidth;
-                document.getElementById('video_input').height = video.offsetHeight;
+                const cnvs = [
+                    'video_input',
+                    'canvas_output_labirynth',
+                    'canvas_output_solved_path',
+                    'canvas_output_green_points'
+                ];
 
-                document.getElementById('canvas_output_labirynth').width = video.offsetWidth;
-                document.getElementById('canvas_output_labirynth').height = video.offsetHeight;
-
-                document.getElementById('canvas_output_solved_path').width = video.offsetWidth;
-                document.getElementById('canvas_output_solved_path').height = video.offsetHeight;
-
-                document.getElementById('canvas_output_green_points').width = video.offsetWidth;
-                document.getElementById('canvas_output_green_points').height = video.offsetHeight;
+                for (const cnv of cnvs) {
+                    document.getElementById(cnv).width = video.offsetWidth;
+                    document.getElementById(cnv).height = video.offsetHeight;
+                }
 
                 document.getElementById('container').style.width = video.offsetWidth + "px";
                 document.getElementById('container').style.height = video.offsetHeight + "px";
+
+                document.getElementById('panel').style.width = video.offsetWidth + "px";
 
                 const maze = new Maze(video);
                 maze.start();
@@ -88,9 +88,9 @@ document.getElementById('opencv').onload = () => {
         function errorCallback(error) {
             console.log("navigator.getUserMedia error: ", error);
         }
-        
-        if(!navigator.mediaDevices){
-            
+
+        if (!navigator.mediaDevices) {
+
             document.getElementById('status').innerHTML = "navigator.mediaDevices is undefined";
         }
 

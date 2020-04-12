@@ -156,7 +156,7 @@ export default class Maze {
             if (points.length > 0) {
                 this.is_green_points = true;
 
-                console.log("green points!");
+               //console.log("green points!");
 
                 cv.circle(this.circles, new cv.Point(points[0].x, points[0].y), points[0].radius * 2, this.green, -1);
                 cv.circle(this.circles, new cv.Point(points[1].x, points[1].y), points[1].radius * 2, this.green, -1);
@@ -165,7 +165,7 @@ export default class Maze {
 
 
                 if (solver_result.is_solved) {
-                    console.log("solved!");
+                    //console.log("solved!");
                     if (this.labirynth_mask.isContinuous()) {
 
                         for (const point of solver_result.path) {
