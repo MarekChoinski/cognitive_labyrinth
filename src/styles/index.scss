@@ -2,6 +2,7 @@
 @import 'camera_input';
 @import 'canvas';
 @import 'button';
+@import 'loading';
 
 html,
 body {
@@ -56,6 +57,7 @@ body {
 .info_container {
   font-size: 0.8em;
   color: rgb(168, 168, 168);
+  font-weight: bold;
   font-family: 'Courier New', Courier, monospace;
 
   &__link {
@@ -77,27 +79,7 @@ body {
   padding: 20px 10px;
 }
 
-$spCol: magenta;
 
-.sp-texture {
-	border: 2px magenta solid;
-	border-radius: 100%;
-	position: relative;
-	background: linear-gradient(45deg, transparent 49%, $spCol 50%, $spCol 50%, transparent 51%, transparent),
-				linear-gradient(-45deg, transparent 49%, $spCol 50%, $spCol 50%, transparent 51%, transparent);
-	background-size: 16px 16px;
-	background-position: 0% 0%;
-	animation: spTexture 1s infinite linear;
-}
-@keyframes spTexture {
-	from { background-position: 0px 0px; }
-	to { background-position: -16px 0px; }
-}
 
-.sp {
-  display: block;
-	width: 32px;
-	height: 32px;
-	clear: both;
-	margin: 20px auto;
-}
+
+

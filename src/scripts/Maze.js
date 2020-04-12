@@ -51,6 +51,7 @@ export default class Maze {
         this.upper_green = [85, 255, 255, 255];
 
         this.green = [0, 255, 0, 128];
+        this.path_color=[214, 6, 214, 255];
     }
 
     // we should find position of end points
@@ -171,10 +172,10 @@ export default class Maze {
                         for (const point of solver_result.path) {
                             let ch = this.solved_path_mask.channels();
                             let ptr = point.y * this.solved_path_mask.cols * ch + point.x * ch;
-                            this.solved_path_mask.data[ptr] = 0; // R
-                            this.solved_path_mask.data[ptr + 1] = 0; // G
-                            this.solved_path_mask.data[ptr + 2] = 255; // B
-                            this.solved_path_mask.data[ptr + 3] = 255; // A
+                            this.solved_path_mask.data[ptr] = this.path_color[0]; // R
+                            this.solved_path_mask.data[ptr + 1] = this.path_color[1]; // G
+                            this.solved_path_mask.data[ptr + 2] = this.path_color[2]; // B
+                            this.solved_path_mask.data[ptr + 3] = this.path_color[3]; // A
                         }
 
                         cv.dilate(

@@ -79,6 +79,8 @@ document.getElementById('opencv').onload = () => {
                 document.getElementById('container').style.height = video.offsetHeight + "px";
 
                 document.getElementById('panel').style.width = video.offsetWidth + "px";
+
+                document.getElementById('loading').classList += " loaded";
                 document.getElementById('panel').classList += " loaded";
                 document.getElementById('container').classList += " loaded";
 
