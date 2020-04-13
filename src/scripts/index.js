@@ -49,6 +49,8 @@ document.getElementById('opencv').onload = () => {
 
 
 
+
+
         var constraints = {
             audio: false,
             video: true
@@ -80,9 +82,18 @@ document.getElementById('opencv').onload = () => {
 
                 document.getElementById('panel').style.width = video.offsetWidth + "px";
 
-                document.getElementById('loading').classList += " loaded";
-                document.getElementById('panel').classList += " loaded";
-                document.getElementById('container').classList += " loaded";
+                const gui = [
+                    'container',
+                    'loading',
+                    'panel'
+                ];
+
+                for (const el of gui) {
+                    document.getElementById(el).classList += " loaded";
+                }
+
+
+
 
                 const maze = new Maze(video);
                 maze.start();
