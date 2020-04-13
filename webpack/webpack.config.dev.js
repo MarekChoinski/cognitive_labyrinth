@@ -12,7 +12,7 @@ module.exports = merge(common, {
   devServer: {
     inline: true,
     hot: true,
-    host: "0.0.0.0"
+    // host: "0.0.0.0"
   },
   plugins: [
     new Webpack.DefinePlugin({
