@@ -6,46 +6,40 @@ import Maze from './Maze.js';
 document.getElementById('opencv').onload = () => {
     cv['onRuntimeInitialized'] = () => {
 
-        // document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
-        // let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        // let cameraStream;
 
         let video = document.getElementById("video_input");
 
-        // getUserMedia.call(navigator, {
-        //     video: true,
-        //     audio: false //optional
-        // }, function (stream) {
-        //     /*
-        //     Here's where you handle the stream differently. Chrome needs to convert the stream
-        //     to an object URL, but Firefox's stream already is one.
-        //     */
-        //     if (window.webkitURL) {
-        //         video.src = window.webkitURL.createObjectURL(stream);
-        //     } else {
-        //         video.src = stream;
-        //     }
-
-        //     //save it for later
-        //     cameraStream = stream;
-
-        //     video.play();
 
 
-        // },
-        //  function (){console.warn("Error getting audio stream from getUserMedia")}
-        // );
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            console.log("enumerateDevices() not supported."); //TODO should be bug
+            return;
+        }
+
+        // List cameras and microphones.
+
+        let availableCameras = [];
+
+        navigator.mediaDevices.enumerateDevices()
+            .then((devices) => {
+                devices.forEach((device) => {
+                    if (device.kind == 'videoinput') {
+                        availableCameras.push(device.deviceId);
+                    }
+                });
 
 
-        // navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-        //     .then((stream) => {
-        //         video.srcObject = stream;
-        //         video.play();
-        //     })
-        //     .catch((err) => {
-        //         //         // TODO here error about two cameras
-        //         console.log("An error occurred! " + err);
-        //     });
+                document.getElementById('status').innerHTML = "";
+
+                for (const c of availableCameras) {
+                    document.getElementById('status').innerHTML = c + document.getElementById('status').innerHTML;
+                }
+
+            })
+            .catch((err) => {
+                console.log(err.name + ": " + err.message);
+            });
+
 
 
 
@@ -53,14 +47,19 @@ document.getElementById('opencv').onload = () => {
 
         var constraints = {
             audio: false,
-            video: true
+            // video: true,
+            video: {
+                deviceId: {
+                    exact: availableCameras[0]
+                }
+            }
         };
         // var video = document.querySelector("video");
 
         function successCallback(stream) {
             video.srcObject = stream;
             video.play();
-            // document.getElementById('status').innerHTML = 'dziala kamera.';
+
 
 
             video.addEventListener('canplaythrough', () => {
