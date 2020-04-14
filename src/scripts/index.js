@@ -39,16 +39,20 @@ document.getElementById('opencv').onload = () => {
                 document.getElementById('flip_camera_button').addEventListener("click", () => {
                     if (availableCameras.length > 1) {
                         actualCameraIndex = actualCameraIndex == 1 ? 0 : 1;
+
+                        actualStream.getTracks().forEach(track => {
+                            track.stop();
+                        });
+
+                        navigator.mediaDevices.getUserMedia(constraints)
+                            .then(successCallback)
+                            .catch(errorCallback);
+
+                            document.getElementById('status').innerHTML = actualCameraIndex;
                     }
                     console.log(actualStream);
 
-                    actualStream.getTracks().forEach(track => {
-                        track.stop();
-                      });
 
-                      navigator.mediaDevices.getUserMedia(constraints)
-                    .then(successCallback)
-                    .catch(errorCallback);
                 });
 
                 //start first
