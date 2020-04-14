@@ -19,20 +19,42 @@ document.getElementById('opencv').onload = () => {
         // List cameras and microphones.
 
         let availableCameras = [];
+        let actualCameraIndex = 0;
+
+        let actualStream;
+
+
 
         navigator.mediaDevices.enumerateDevices()
             .then((devices) => {
+
+                // count cameras
                 devices.forEach((device) => {
                     if (device.kind == 'videoinput') {
                         availableCameras.push(device.deviceId);
                     }
                 });
 
+                // add listener
+                document.getElementById('flip_camera_button').addEventListener("click", () => {
+                    if (availableCameras.length > 1) {
+                        actualCameraIndex = actualCameraIndex == 1 ? 0 : 1;
+                    }
+                    console.log(actualStream);
 
-                document.getElementById('status').innerHTML = "";
+                    actualStream.getTracks().forEach(track => {
+                        track.stop();
+                      });
 
-                    document.getElementById('status').innerHTML = availableCameras.length;
-                
+                      navigator.mediaDevices.getUserMedia(constraints)
+                    .then(successCallback)
+                    .catch(errorCallback);
+                });
+
+                //start first
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(successCallback)
+                    .catch(errorCallback);
 
             })
             .catch((err) => {
@@ -41,25 +63,20 @@ document.getElementById('opencv').onload = () => {
 
 
 
-
-
-
-        var constraints = {
+        let constraints = {
             audio: false,
-            // video: true,
             video: {
                 deviceId: {
-                    exact: availableCameras[0]
+                    exact: availableCameras[actualCameraIndex]
                 }
             }
         };
         // var video = document.querySelector("video");
 
         function successCallback(stream) {
+            actualStream = stream;
             video.srcObject = stream;
             video.play();
-
-
 
             video.addEventListener('canplaythrough', () => {
 
@@ -90,9 +107,6 @@ document.getElementById('opencv').onload = () => {
                     document.getElementById(el).classList += " loaded";
                 }
 
-
-
-
                 const maze = new Maze(video);
                 maze.start();
             });
@@ -107,9 +121,9 @@ document.getElementById('opencv').onload = () => {
             document.getElementById('status').innerHTML = "navigator.mediaDevices is undefined";
         }
 
-        navigator.mediaDevices.getUserMedia(constraints)
-            .then(successCallback)
-            .catch(errorCallback);
+        // navigator.mediaDevices.getUserMedia(constraints)
+        //     .then(successCallback)
+        //     .catch(errorCallback);
 
 
     };
