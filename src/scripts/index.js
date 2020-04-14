@@ -31,9 +31,8 @@ document.getElementById('opencv').onload = () => {
 
                 document.getElementById('status').innerHTML = "";
 
-                for (const c of availableCameras) {
-                    document.getElementById('status').innerHTML = c + document.getElementById('status').innerHTML;
-                }
+                    document.getElementById('status').innerHTML = availableCameras.length;
+                
 
             })
             .catch((err) => {
