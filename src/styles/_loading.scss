@@ -1,0 +1,39 @@
+.loading{
+
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+
+    &.loaded{
+        display: none;
+    }
+
+    &__info{
+      font-size: 0.7em;
+      color: rgb(168, 168, 168);
+      font-weight: bold;
+    }
+
+    &__spinner {
+        display: block;
+        width: 32px;
+        height: 32px;
+        clear: both;
+        margin: 20px auto;
+        border: 2px magenta solid;
+        border-radius: 100%;
+        position: relative;
+        background: linear-gradient(45deg, transparent 49%, $spCol 50%, $spCol 50%, transparent 51%, transparent),
+                    linear-gradient(-45deg, transparent 49%, $spCol 50%, $spCol 50%, transparent 51%, transparent);
+        background-size: 16px 16px;
+        background-position: 0% 0%;
+        animation: spTexture 1s infinite linear;
+    }
+    @keyframes spTexture {
+        from { background-position: 0px 0px; }
+        to { background-position: -16px 0px; }
+    }
+   
+  }
