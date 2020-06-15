@@ -1,0 +1,24 @@
+.button{
+    position: relative;
+    
+    background-color: rgba(40,40,40,0.3);
+    padding: 14px;
+    margin: 0 5px;
+    border-radius: 100%;
+    border: none;
+    line-height: 1;
+    user-select:none;           /* Non-prefixed version */
+
+    &:hover{
+        background-color: rgba(40,40,40,0.6);
+    }
+
+    &:active, &:focus{
+        background-color: rgba(40,40,40,0.8);
+    }
+
+    img {
+        height: 24px;
+        width: 24px;
+    }
+}

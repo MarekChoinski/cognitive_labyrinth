@@ -35,12 +35,12 @@ export default class Maze {
         this.context_labirynth = document.getElementById("canvas_output_labirynth").getContext("2d");
         this.context_green_points = document.getElementById("canvas_output_green_points").getContext("2d");
         this.context_solved_path = document.getElementById("canvas_output_solved_path").getContext("2d");
-        this.frame_from_video = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
+        this.frame_from_video = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
 
-        this.labirynth_mask = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+        this.labirynth_mask = new cv.Mat(video.offsetHeight, video.offsetWidth, cv.CV_8UC1);
 
-        this.circles = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
-        this.solved_path_mask = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
+        this.circles = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
+        this.solved_path_mask = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
 
         this.FPS = 1;
         this.sensivity_of_geeting_labirynth = 110;
@@ -51,6 +51,7 @@ export default class Maze {
         this.upper_green = [85, 255, 255, 255];
 
         this.green = [0, 255, 0, 128];
+        this.path_color=[214, 6, 214, 255];
     }
 
     // we should find position of end points
@@ -150,13 +151,13 @@ export default class Maze {
 
             let points = this.find_position_of_end_points(points_mask);
 
-            this.circles = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
-            this.solved_path_mask = cv.Mat.zeros(this.video.height, this.video.width, cv.CV_8UC4);
+            this.circles = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
+            this.solved_path_mask = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
 
             if (points.length > 0) {
                 this.is_green_points = true;
 
-                console.log("green points!");
+               //console.log("green points!");
 
                 cv.circle(this.circles, new cv.Point(points[0].x, points[0].y), points[0].radius * 2, this.green, -1);
                 cv.circle(this.circles, new cv.Point(points[1].x, points[1].y), points[1].radius * 2, this.green, -1);
@@ -165,16 +166,16 @@ export default class Maze {
 
 
                 if (solver_result.is_solved) {
-                    console.log("solved!");
+                    //console.log("solved!");
                     if (this.labirynth_mask.isContinuous()) {
 
                         for (const point of solver_result.path) {
                             let ch = this.solved_path_mask.channels();
                             let ptr = point.y * this.solved_path_mask.cols * ch + point.x * ch;
-                            this.solved_path_mask.data[ptr] = 0; // R
-                            this.solved_path_mask.data[ptr + 1] = 0; // G
-                            this.solved_path_mask.data[ptr + 2] = 255; // B
-                            this.solved_path_mask.data[ptr + 3] = 255; // A
+                            this.solved_path_mask.data[ptr] = this.path_color[0]; // R
+                            this.solved_path_mask.data[ptr + 1] = this.path_color[1]; // G
+                            this.solved_path_mask.data[ptr + 2] = this.path_color[2]; // B
+                            this.solved_path_mask.data[ptr + 3] = this.path_color[3]; // A
                         }
 
                         cv.dilate(
@@ -220,9 +221,9 @@ export default class Maze {
                 cap.read(this.frame_from_video);
 
                 this.calculateMaze();
-                this.context_green_points.clearRect(0, 0, this.video.height, this.video.width);
+                this.context_green_points.clearRect(0, 0, this.video.offsetHeight, this.video.offsetWidth);
                 cv.imshow('canvas_output_green_points', this.circles);
-                this.context_solved_path.clearRect(0, 0, this.video.height, this.video.width);
+                this.context_solved_path.clearRect(0, 0, this.video.offsetHeight, this.video.offsetWidth);
                 cv.imshow('canvas_output_solved_path', this.solved_path_mask);
 
                 let delay = 1000 / this.FPS - (Date.now() - begin);

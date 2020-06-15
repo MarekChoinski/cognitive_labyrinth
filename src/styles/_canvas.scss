@@ -1,0 +1,15 @@
+.canvas {
+    width: 100vw;
+    height: auto;
+    position: absolute;
+
+    @media (min-width: 1200px) {
+        border-radius: 16px;
+        height: 70vh;
+        width: auto;
+
+        .canvas--video {
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.47);
+        }
+    }
+}
