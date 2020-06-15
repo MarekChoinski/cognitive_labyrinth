@@ -1,12 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>webpack starterkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maze solver</title>
 </head>
+
 <body>
-  <h1>webpack starter</h1>
-  <p>✨ A lightweight foundation for your next webpack based frontend project.</p>
+
+  <p id="status">OpenCV.js is loading...</p>
+
+  <!-- <img id="canvas_input" height="480" width="640"></canvas> -->
+
+  <div style="position: relative;">
+    <video style="position: absolute;" id="video_input" height="480" width="640" class="camera_input"></video>
+    <!-- <canvas style="position: absolute;" id="canvas_output" height="480" width="640"> </canvas> -->
+    <canvas style="position: absolute;opacity: 0.3;filter: invert(1);" id="canvas_output_labirynth" height="480"
+      width="640"></canvas>
+    <canvas style="position: absolute;opacity: 0.4;" id="canvas_output_solved_path" height="480" width="640"></canvas>
+    <canvas style="position: absolute;opacity: 0.8;" id="canvas_output_green_points" height="480" width="640"></canvas>
+  </div>
+
+
+  <script async src="https://docs.opencv.org/master/opencv.js" id="opencv" type="text/javascript">
+  </script>
+  <!-- <script src="https://docs.opencv.org/master/utils.js" id="opencv" type="text/javascript"> -->
+  <!-- </script> -->
+
 </body>
+
 </html>
