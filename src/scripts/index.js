@@ -19,7 +19,7 @@ document.getElementById('opencv').onload = () => {
         // List cameras and microphones.
 
         let availableCameras = [];
-        let actualCameraIndex = 1;
+        let actualCameraIndex = 0;
 
         let actualStream;
 
@@ -48,7 +48,8 @@ document.getElementById('opencv').onload = () => {
                             .then(successCallback)
                             .catch(errorCallback);
 
-                            document.getElementById('status').innerHTML = availableCameras[actualCameraIndex];
+                            document.getElementById('status').innerHTML = availableCameras[0] + '<br/>' + availableCameras[1];
+                            // document.getElementById('status').innerHTML = availableCameras.length;
                     }
                     console.log(actualStream);
 
