@@ -1,5 +1,5 @@
 {
-  "homepage": "https://marekchoinski.github.io/real-time-maze-solver/",
+  "homepage": "https://mazesolver.marekchoinski.com",
   "name": "webpack-starter",
   "version": "1.0.0",
   "description": "A light foundation for your next frontend project based on webpack.",
@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.10.1",
-    "core-js": "^3.6.5"
+    "core-js": "^3.6.5",
+    "gh-pages": "^3.1.0"
   }
 }
