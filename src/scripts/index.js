@@ -73,7 +73,10 @@ document.getElementById('opencv').onload = () => {
             video: {
                 deviceId: {
                     exact: availableCameras[actualCameraIndex]
-                }
+                },
+                advanced: [{
+                    facingMode: "environment"
+                }]
             }
         };
         // var video = document.querySelector("video");
