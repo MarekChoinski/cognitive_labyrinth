@@ -1,9 +1,34 @@
-# Webpack Frontend Starterkit
+<div align="center">
+  <h1>Maze solver</h1>
+
+Maze solver is **Progressive Web App** with real-time camera solves handwritten labyrinths using **Opencv.js**, **WebRTC** and breadth-first search of graph. Written carefully using **OOP** and tested with **Jest**.
 
 [![Dependabot badge](https://flat.badgen.net/dependabot/wbkd/webpack-starter?icon=dependabot)](https://dependabot.com/)
 
-A lightweight foundation for your next webpack based frontend project.
+<img src="https://i.imgur.com/0wFxpYA.jpg" width="600" align="center">
 
+</div>
+<div align="center">
+  <h1>How it works?</h1>
+
+</div>
+
+1. Using WebRTC image from camera is captured from online webcam (eg. from smartphone)
+2. Image is grayscaled
+3. Appropriate gray levels is picked up for extracing maze
+4. Maze mask is dilatated for better effect
+5. Using again captured image green color is tresholded
+6. Two biggest green area are selected as end points of labirynth
+7. Maze mask and green mask is transformed to matrix of ints
+8. Matrix(graph) is solved using breadth-first search
+9. Solved path is drawn on canvas
+
+And this is repeated on 24 FPS.
+
+
+<div align="center">
+  <h1>Developing</h1>
+</div>
 
 ### Installation
 
@@ -17,16 +42,16 @@ npm install
 npm start
 ```
 
+### Run tests
+
+```
+npm test
+```
+
 ### Build Prod Version
 
 ```
 npm run build
 ```
 
-### Features:
-
-* ES6 Support via [babel](https://babeljs.io/) (v7)
-* SASS Support via [sass-loader](https://github.com/jtangelder/sass-loader)
-* Linting via [eslint-loader](https://github.com/MoOx/eslint-loader)
-
-When you run `npm run build` we use the [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin) to move the css to a separate file. The css file gets included in the head of the `index.html`.
+</div>
