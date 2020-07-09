@@ -1,6 +1,7 @@
 .button{
     position: relative;
-    
+    display: block;
+    cursor: pointer;
     background-color: rgba(40,40,40,0.3);
     padding: 14px;
     margin: 0 5px;
