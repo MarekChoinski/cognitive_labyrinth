@@ -5,7 +5,7 @@ Maze solver is **Progressive Web App** with real-time camera solves handwritten 
 
 [![Dependabot badge](https://flat.badgen.net/dependabot/wbkd/webpack-starter?icon=dependabot)](https://dependabot.com/)
 
-<img src="https://i.imgur.com/0wFxpYA.jpg" width="600" align="center">
+<img src="https://i.imgur.com/r0qh4tT.jpg" width="500" align="center">
 
 </div>
 <div align="center">
