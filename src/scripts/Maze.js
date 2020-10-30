@@ -1,28 +1,5 @@
 import Solver from "./Solver";
-
-
-const printError = (err) => {
-    if (typeof err === 'undefined') {
-        err = '';
-    } else if (typeof err === 'number') {
-        if (!isNaN(err)) {
-            if (typeof cv !== 'undefined') {
-                err = 'Exception: ' + cv.exceptionFromPtr(err).msg;
-            }
-        }
-    } else if (typeof err === 'string') {
-        let ptr = Number(err.split(' ')[0]);
-        if (!isNaN(ptr)) {
-            if (typeof cv !== 'undefined') {
-                err = 'Exception: ' + cv.exceptionFromPtr(ptr).msg;
-            }
-        }
-    } else if (err instanceof Error) {
-        err = err.stack.replace(/\n/g, '<br>');
-    }
-
-    throw new Error(err);
-};
+import {dilateImage, printError} from './utils';
 
 
 //TODO: dilatate should be function 
@@ -35,6 +12,8 @@ export default class Maze {
         this.context_labirynth = document.getElementById("canvas_output_labirynth").getContext("2d");
         this.context_green_points = document.getElementById("canvas_output_green_points").getContext("2d");
         this.context_solved_path = document.getElementById("canvas_output_solved_path").getContext("2d");
+        this.context_user_path = document.getElementById("canvas_output_user_path").getContext("2d");
+
         this.frame_from_video = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
 
         this.labirynth_mask = new cv.Mat(video.offsetHeight, video.offsetWidth, cv.CV_8UC1);
@@ -42,13 +21,20 @@ export default class Maze {
         this.circles = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
         this.solved_path_mask = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
 
+        this.user_path = cv.Mat.zeros(this.video.offsetHeight, this.video.offsetWidth, cv.CV_8UC4);
+
         this.FPS = 1;
         this.sensivity_of_geeting_labirynth = 110;
 
+        // ITS OPENV_HSV
+        // explanation: https://stackoverflow.com/questions/17878254/opencv-python-cant-detect-blue-objects
         // this.lower_green = [40, 100, 85, 0];
         // this.upper_green = [75, 255, 255, 255];
         this.lower_green = [30, 80, 75, 0];
         this.upper_green = [85, 255, 255, 255];
+
+        this.lower_violet = [115,50, 80, 0];
+        this.upper_violet = [180,255,255, 255];
 
         this.green = [0, 255, 0, 128];
         this.path_color=[214, 6, 214, 255];
@@ -110,23 +96,23 @@ export default class Maze {
     calculateMaze() {
 
         try {
-            // get grame frame
+            // get gray frame
             let gray = new cv.Mat();
-
             cv.cvtColor(this.frame_from_video, gray, cv.COLOR_RGBA2GRAY, 0);
             // threshold image to emilinate white colors - we get only black labirynth + green points
             cv.threshold(gray, gray, this.sensivity_of_geeting_labirynth, 255, cv.THRESH_BINARY_INV);
 
             // dilatation for bolder walls of maze
-            cv.dilate(
-                gray,
-                this.labirynth_mask,
-                cv.Mat.ones(3, 3, cv.CV_8U), //kernel
-                new cv.Point(-1, -1), //anchor (-1 is default for center)
-                1, // iteration of dilatation //TODO this could be too much - change also in green points in case of
-                cv.BORDER_CONSTANT,
-                cv.morphologyDefaultBorderValue()
-            );
+            dilateImage(gray, this.labirynth_mask, 3);
+            // cv.dilate(
+            //     gray,
+            //     this.labirynth_mask,
+            //     cv.Mat.ones(3, 3, cv.CV_8U), //kernel
+            //     new cv.Point(-1, -1), //anchor (-1 is default for center)
+            //     1, // iteration of dilatation //TODO this could be too much - change also in green points in case of
+            //     cv.BORDER_CONSTANT,
+            //     cv.morphologyDefaultBorderValue()
+            // );
 
             // we need to get green points mask for differentiation of labirynth mask
             let hsv = new cv.Mat();
@@ -136,15 +122,44 @@ export default class Maze {
 
             let points_mask = new cv.Mat();
             cv.inRange(hsv, low, high, points_mask);
-            cv.dilate(
-                points_mask,
-                points_mask,
-                cv.Mat.ones(5, 5, cv.CV_8U),
-                new cv.Point(-1, -1),
-                1,
-                cv.BORDER_CONSTANT,
-                cv.morphologyDefaultBorderValue()
-            );
+            dilateImage(points_mask, points_mask, 5);
+            
+            // cv.dilate(
+            //     points_mask,
+            //     points_mask,
+            //     cv.Mat.ones(5, 5, cv.CV_8U),
+            //     new cv.Point(-1, -1),
+            //     1,
+            //     cv.BORDER_CONSTANT,
+            //     cv.morphologyDefaultBorderValue()
+            // );
+
+
+// VIOLET TEST
+
+// we need to get green points mask for differentiation of labirynth mask
+let hsv2 = new cv.Mat();
+cv.cvtColor(this.frame_from_video, hsv2, cv.COLOR_BGR2HSV, 0);
+const low2 = new cv.Mat(hsv2.rows, hsv2.cols, hsv2.type(), this.lower_violet);
+const high2 = new cv.Mat(hsv2.rows, hsv2.cols, hsv2.type(), this.upper_violet);
+
+// let points_mask2 = new cv.Mat();
+cv.inRange(hsv2, low2, high2, this.user_path);
+dilateImage(this.user_path, this.user_path, 5);
+// cv.dilate(
+//     this.user_path,
+//     this.user_path,
+//     cv.Mat.ones(5, 5, cv.CV_8U),
+//     new cv.Point(-1, -1),
+//     1,
+//     cv.BORDER_CONSTANT,
+//     cv.morphologyDefaultBorderValue()
+// );
+
+// user_path
+
+// VIOLET TEST
+
 
             let mask = new cv.Mat();
             cv.subtract(this.labirynth_mask, points_mask, this.labirynth_mask, mask, -1);
@@ -178,15 +193,17 @@ export default class Maze {
                             this.solved_path_mask.data[ptr + 3] = this.path_color[3]; // A
                         }
 
-                        cv.dilate(
-                            this.solved_path_mask,
-                            this.solved_path_mask,
-                            cv.Mat.ones(4, 4, cv.CV_8U),
-                            new cv.Point(-1, -1),
-                            1,
-                            cv.BORDER_CONSTANT,
-                            cv.morphologyDefaultBorderValue()
-                        );
+                        dilateImage(this.solved_path_mask, this.solved_path_mask, 4);
+
+                        // cv.dilate(
+                        //     this.solved_path_mask,
+                        //     this.solved_path_mask,
+                        //     cv.Mat.ones(4, 4, cv.CV_8U),
+                        //     new cv.Point(-1, -1),
+                        //     1,
+                        //     cv.BORDER_CONSTANT,
+                        //     cv.morphologyDefaultBorderValue()
+                        // );
 
                         // this.solved_path_mask = temp_solved_path_mask.clone();
                         // temp_solved_path_mask.delete();
@@ -204,6 +221,11 @@ export default class Maze {
             high.delete();
             hsv.delete();
             points_mask.delete();
+
+            // VIOLET
+            hsv2.delete();
+            // points_mask2.delete();
+            // VIOLET
 
         } catch (error) {
             console.log(error);
@@ -223,8 +245,13 @@ export default class Maze {
                 this.calculateMaze();
                 this.context_green_points.clearRect(0, 0, this.video.offsetHeight, this.video.offsetWidth);
                 cv.imshow('canvas_output_green_points', this.circles);
-                this.context_solved_path.clearRect(0, 0, this.video.offsetHeight, this.video.offsetWidth);
-                cv.imshow('canvas_output_solved_path', this.solved_path_mask);
+                // this.context_solved_path.clearRect(0, 0, this.video.offsetHeight, this.video.offsetWidth);
+                // cv.imshow('canvas_output_solved_path', this.solved_path_mask);
+
+                // VIOLET
+                this.context_user_path.clearRect(0, 0, this.video.offsetHeight, this.video.offsetWidth);
+                cv.imshow('canvas_output_user_path', this.user_path);
+                // VIOLET
 
                 let delay = 1000 / this.FPS - (Date.now() - begin);
                 setTimeout(() => mazing(), delay);
@@ -237,11 +264,6 @@ export default class Maze {
 
         // schedule the first one.
         setTimeout(() => mazing(), 0); // TODO simply mazing() ?
-
-
-
-
-
     }
 
     //todo
